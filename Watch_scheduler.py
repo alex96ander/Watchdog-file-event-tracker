@@ -5,12 +5,15 @@ from email.message import EmailMessage
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime
+from dotenv import load_dotenv
 
-WATCH_FOLDER = r"D:\Training\Watch_folder"
-SENDER = "alexsmart225@gmail.com"
-RECEIVER = "aander12902@gmail.com"
-APP_PASSWORD = "xeov xzhk wibb acoj"
-LOG_FILE = r"D:\Training\watchdog_log.txt"
+load_dotenv()
+
+WATCH_FOLDER = os.getenv("WATCH_FOLDER")
+SENDER = os.getenv("SENDER")
+RECEIVER = os.getenv("RECEIVER")
+APP_PASSWORD = os.getenv("APP_PASSWORD")
+LOG_FILE = os.getenv("LOG_FILE")
 
 
 def log(message):
