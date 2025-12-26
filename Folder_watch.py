@@ -2,7 +2,6 @@ import os
 import time, glob
 import smtplib
 from email.message import EmailMessage
-from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime
 from dotenv import load_dotenv
@@ -84,28 +83,3 @@ class FolderHandler(FileSystemEventHandler):
 
         except Exception as e:
             log(f"ERROR in on_deleted: {e}")
-
-
-if __name__ == "__main__":
-
-    log("***** SCRIPT STARTED *****")
-
-    scan_existing_files()
-
-    event_handler = FolderHandler()
-    observer = Observer()
-    observer.schedule(event_handler, WATCH_FOLDER, recursive=True)
-    observer.start()
-
-    log("Watchdog started")
-
-    try:
-        time.sleep(10)
-    except Exception as e:
-        log(f"ERROR during sleep: {e}")
-    finally:
-        observer.stop()
-        observer.join()
-        log("Watchdog observer stopped")
-
-    log("***** SCRIPT TERMINATED *****\n")
