@@ -1,9 +1,8 @@
-from Folder_watch import scan_existing_files
-from Folder_watch import FolderHandler
+import time
+import os
 from watchdog.observers import Observer
-from Folder_watch import log
 from dotenv import load_dotenv
-import time, os
+from Folder_watch import scan_existing_files, FolderHandler, log
 
 load_dotenv()
 WATCH_FOLDER = os.getenv("WATCH_FOLDER")

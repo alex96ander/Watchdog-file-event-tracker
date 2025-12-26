@@ -50,7 +50,6 @@ def scan_existing_files():
     log("Scanning existing files...")
     try:
         all_files = glob.glob(os.path.join(WATCH_FOLDER, "**", "*"), recursive=True)
-
         files_found = False
         for path in all_files:
             if os.path.isfile(path):
@@ -68,7 +67,6 @@ def scan_existing_files():
 class FolderHandler(FileSystemEventHandler):
     def on_created(self, event):
         try:
-            # print(event)
             if not event.is_directory:
                 file_path = event.src_path
                 log(f"New file: {file_path}")
@@ -83,3 +81,7 @@ class FolderHandler(FileSystemEventHandler):
 
         except Exception as e:
             log(f"ERROR in on_deleted: {e}")
+            
+    def on_modified(self, event):
+        if not event.is_directory:
+            log(f"File modified: {event.src_path}")
