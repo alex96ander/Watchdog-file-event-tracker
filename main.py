@@ -3,13 +3,16 @@ import os
 from watchdog.observers import Observer
 from dotenv import load_dotenv
 from Folder_watch import scan_existing_files, FolderHandler, log
+from datetime import datetime
 
 load_dotenv()
 WATCH_FOLDER = os.getenv("WATCH_FOLDER")
 
 def main():
-    log("***** SCRIPT STARTED *****")
-
+    timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    log(f"Watcher Script STARTED | {timestamp}")
+    log(f"******************************************************************")
+    
     scan_existing_files()
 
     observer = Observer()
@@ -19,7 +22,7 @@ def main():
     log("Watchdog started")
 
     try:
-        time.sleep(10)
+        time.sleep(20)
     except KeyboardInterrupt:
         log("Stopped by user")
     finally:
@@ -27,7 +30,8 @@ def main():
         observer.join()
         log("Watchdog observer stopped")
 
-    log("***** SCRIPT TERMINATED *****\n")
+    log(f"Watcher Script Stopped | {timestamp}")
+    log(f"******************************************************************")
 
 
 if __name__ == "__main__":

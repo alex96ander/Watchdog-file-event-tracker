@@ -13,13 +13,19 @@ SENDER = os.getenv("SENDER")
 RECEIVER = os.getenv("RECEIVER")
 APP_PASSWORD = os.getenv("APP_PASSWORD")
 LOG_FILE = os.getenv("LOG_FILE")
-
+STEP_COUNTER = 0
 
 def log(message):
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    global STEP_COUNTER
+    STEP_COUNTER += 1
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    log_message = f"[{timestamp}] STEP {STEP_COUNTER}: {message}"
+
     with open(LOG_FILE, "a") as f:
-        f.write(f"[{timestamp}] {message}\n")
+        f.write(log_message + "\n")
     print(message)
+
 
 
 def send_email(subject, body):
