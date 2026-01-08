@@ -1,10 +1,13 @@
 import os
-import time, glob
+import time
+import glob
 import smtplib
 from email.message import EmailMessage
 from watchdog.events import FileSystemEventHandler
 from datetime import datetime
 from dotenv import load_dotenv
+from zipfile_process import unzip_file
+from logger import log
 
 load_dotenv()
 
@@ -13,20 +16,27 @@ SENDER = os.getenv("SENDER")
 RECEIVER = os.getenv("RECEIVER")
 APP_PASSWORD = os.getenv("APP_PASSWORD")
 LOG_FILE = os.getenv("LOG_FILE")
-STEP_COUNTER = 0
 
-def log(message):
-    global STEP_COUNTER
-    STEP_COUNTER += 1
+# global STEP_COUNTER
+# STEP_COUNTER = 0
 
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    log_message = f"[{timestamp}] STEP {STEP_COUNTER}: {message}"
+# def initialize_log():
+    # global STEP_COUNTER
+    # STEP_COUNTER = 0
 
-    with open(LOG_FILE, "a") as f:
-        f.write(log_message + "\n")
-    print(message)
+    # with open(LOG_FILE, "w", encoding="utf-8") as f:
+    #     f.write("")
 
+# def log(message):
+#     global STEP_COUNTER
+#     STEP_COUNTER += 1
 
+#     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#     log_message = f"[{timestamp}] STEP {STEP_COUNTER}: {message}"
+
+#     with open(LOG_FILE, "a", encoding="utf-8") as f:
+#         f.write(log_message + "\n")
+#     print(log_message)
 
 def send_email(subject, body):
     try:
@@ -57,14 +67,22 @@ def scan_existing_files():
     try:
         all_files = glob.glob(os.path.join(WATCH_FOLDER, "**", "*"), recursive=True)
         files_found = False
+
         for path in all_files:
             if os.path.isfile(path):
-                log(f"Existing file: {path}")
+                log(f"Existing file found: {path}")
                 files_found = True
+                
+            if path.lower().endswith(".zip"):
+                    zip_found = True
+                    log(f"Existing ZIP found, starting unzip: {path}")
+                    unzip_file(path)
 
         if not files_found:
-            log("No files found in folder")
-            # send_email("No Files Found",f"No files present in folder: {WATCH_FOLDER}")
+            log("No files found in watch folder")
+            
+        if files_found and not zip_found:
+            log("Files found but no ZIP files present")
 
     except Exception as e:
         log(f"ERROR during scanning: {e}")
@@ -75,8 +93,14 @@ class FolderHandler(FileSystemEventHandler):
         try:
             if not event.is_directory:
                 file_path = event.src_path
-                log(f"New file: {file_path}")
-                # send_email("New File Received",f"A new file was added:\n{file_path}")
+                log(f"New file detected: {file_path}")
+
+                if file_path.lower().endswith(".zip"):
+                    unzip_file(file_path)
+                    # send_email(
+                    #     "Daily Incremental Files Received",
+                    #     f"ZIP file processed successfully:\n{file_path}")
+
         except Exception as e:
             log(f"ERROR in on_created: {e}")
             

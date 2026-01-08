@@ -2,13 +2,16 @@ import time
 import os
 from watchdog.observers import Observer
 from dotenv import load_dotenv
-from Folder_watch import scan_existing_files, FolderHandler, log
+from Folder_watch import scan_existing_files, FolderHandler
+from logger import log, initialize_log
 from datetime import datetime
 
 load_dotenv()
 WATCH_FOLDER = os.getenv("WATCH_FOLDER")
 
 def main():
+    
+    initialize_log()
     timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
     log(f"Watcher Script STARTED | {timestamp}")
     log(f"******************************************************************")
