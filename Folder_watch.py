@@ -4,7 +4,7 @@ import glob
 import smtplib
 from email.message import EmailMessage
 from watchdog.events import FileSystemEventHandler
-from datetime import datetime
+from datetime import datetime, date
 from dotenv import load_dotenv
 from zipfile_process import unzip_file
 from logger import log
@@ -46,6 +46,8 @@ def scan_existing_files():
     try:
         all_files = glob.glob(os.path.join(WATCH_FOLDER, "**", "*"), recursive=True)
         files_found = False
+        zip_found = False
+        today = date.today()
 
         for path in all_files:
             if os.path.isfile(path):
@@ -54,8 +56,14 @@ def scan_existing_files():
                 
             if path.lower().endswith(".zip"):
                     zip_found = True
-                    log(f"Existing ZIP found, starting unzip: {path}")
-                    unzip_file(path)
+                    file_mtime = os.path.getmtime(path)
+                    file_date = datetime.fromtimestamp(file_mtime).date()
+                    
+                    if file_date == today:
+                        log(f"Today's ZIP found, starting unzip: {path}")
+                        unzip_file(path)
+                    else:
+                        log(f"Skipping ZIP (not today's): {path} | Date: {file_date}")
 
         if not files_found:
             log("No files found in watch folder")
