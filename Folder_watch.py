@@ -17,27 +17,6 @@ RECEIVER = os.getenv("RECEIVER")
 APP_PASSWORD = os.getenv("APP_PASSWORD")
 LOG_FILE = os.getenv("LOG_FILE")
 
-# global STEP_COUNTER
-# STEP_COUNTER = 0
-
-# def initialize_log():
-    # global STEP_COUNTER
-    # STEP_COUNTER = 0
-
-    # with open(LOG_FILE, "w", encoding="utf-8") as f:
-    #     f.write("")
-
-# def log(message):
-#     global STEP_COUNTER
-#     STEP_COUNTER += 1
-
-#     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-#     log_message = f"[{timestamp}] STEP {STEP_COUNTER}: {message}"
-
-#     with open(LOG_FILE, "a", encoding="utf-8") as f:
-#         f.write(log_message + "\n")
-#     print(log_message)
-
 def send_email(subject, body):
     try:
         msg = EmailMessage()
@@ -93,7 +72,7 @@ class FolderHandler(FileSystemEventHandler):
         try:
             if not event.is_directory:
                 file_path = event.src_path
-                log(f"New file detected: {file_path}")
+                log(f"New file: {file_path}")
 
                 if file_path.lower().endswith(".zip"):
                     unzip_file(file_path)

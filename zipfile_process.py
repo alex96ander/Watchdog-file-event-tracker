@@ -23,7 +23,7 @@ def unzip_file(zip_path):
         output_folder = os.path.join(base_path, "unzippedfiles", today_date)
         os.makedirs(output_folder, exist_ok = True)   
         
-        log(f"Unzip target folder: {output_folder}")
+        log(f"Unzip folder: {output_folder}")
         
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(output_folder)

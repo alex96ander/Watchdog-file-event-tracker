@@ -22,7 +22,7 @@ def main():
     observer.schedule(FolderHandler(), WATCH_FOLDER, recursive=True)
     observer.start()
 
-    log("Watchdog started")
+    log("Watching started")
 
     try:
         time.sleep(20)
